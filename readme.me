@@ -1,1 +1,22 @@
 Test space for site features
+
+## Editing Page Copy
+
+This is a Framer-exported static site that uses React hydration. Text content is stored in **three places** that must all be kept in sync. If only the HTML is updated, the JS bundle will overwrite the change on hydration.
+
+When changing any visible text on a page, update all of the following:
+
+1. **Page HTML file** (e.g. `index.html`)
+   The server-rendered markup the browser shows on first paint.
+
+2. **Page component `.mjs` bundle**
+   The React component tree that hydrates the page. Each page route has a corresponding `.mjs` file (e.g. `iDcHv9HNpqRex6PReb98a6rK3ZHo1CtIJC8CvmpKx6I.Dwi9EKqJ.mjs` for the index route). Search for the exact text string and replace it. Some text appears multiple times (once per responsive breakpoint) — replace all occurrences.
+
+3. **`assets/searchIndex.json`**
+   The site search index. Find the matching entry for the page's URL path (e.g. `"/"`) and update the relevant heading or paragraph field.
+
+### Finding which `.mjs` file to edit
+
+- Open the HTML file and look for the `data-framer-hydrate-v2` attribute on `<div id="main">`. The `routeId` value (e.g. `eddhjzMea`) identifies the route.
+- Search the `.mjs` files for the exact text you're changing — the file containing it is the page component bundle.
+- Alternatively, check `script_main.ChSf-xMO.mjs` which maps route IDs to their chunk imports.

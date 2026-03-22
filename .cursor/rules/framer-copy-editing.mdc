@@ -1,0 +1,20 @@
+---
+description: Process for editing visible text/copy on this Framer-exported site
+globs: "*.html"
+alwaysApply: false
+---
+
+# Framer Copy Editing — Three-File Sync
+
+When editing any visible text on a page, you MUST update all three locations:
+
+1. **Page HTML file** (e.g. `index.html`) — the server-rendered markup.
+2. **Page component `.mjs` bundle** — the React component that hydrates the page. Search all `.mjs` files for the exact text. Replace every occurrence (text may repeat per responsive breakpoint — use `replace_all`).
+3. **`assets/searchIndex.json`** — update the matching entry under the page's URL path (e.g. `"/"`).
+
+If only the HTML is updated, React hydration will overwrite the change with the stale value from the JS bundle.
+
+## Finding the right `.mjs` file
+
+- Search all `.mjs` files for the exact string being changed.
+- Or: in the HTML, find `data-framer-hydrate-v2` on `<div id="main">` to get the `routeId`, then search `.mjs` files for content associated with that route.
