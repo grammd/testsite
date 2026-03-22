@@ -1,20 +1,40 @@
 ---
-description: Process for editing visible text/copy on this Framer-exported site
-globs: "*.html"
-alwaysApply: false
+description: Protocol for editing any text, images, or visible content on this Framer-exported site
+alwaysApply: true
 ---
 
-# Framer Copy Editing — Three-File Sync
+# Framer Content Editing Protocol
 
-When editing any visible text on a page, you MUST update all three locations:
+This is a Framer-exported static site using React hydration. All visible content (text, images, links, etc.) is duplicated across multiple file types that MUST be kept in sync. If only the HTML is updated, React hydration will overwrite the change with the stale value from the JS bundle.
 
-1. **Page HTML file** (e.g. `index.html`) — the server-rendered markup.
-2. **Page component `.mjs` bundle** — the React component that hydrates the page. Search all `.mjs` files for the exact text. Replace every occurrence (text may repeat per responsive breakpoint — use `replace_all`).
-3. **`assets/searchIndex.json`** — update the matching entry under the page's URL path (e.g. `"/"`).
+## For EVERY text or image change, update ALL of these:
 
-If only the HTML is updated, React hydration will overwrite the change with the stale value from the JS bundle.
+### 1. HTML page files
 
-## Finding the right `.mjs` file
+Every page that displays the content must be updated. Shared elements (e.g. navigation, footer) appear in ALL page HTML files — not just one.
 
-- Search all `.mjs` files for the exact string being changed.
-- Or: in the HTML, find `data-framer-hydrate-v2` on `<div id="main">` to get the `routeId`, then search `.mjs` files for content associated with that route.
+- Page-specific content: update the relevant `.html` file (e.g. `index.html`).
+- Shared content (nav, footer, etc.): update EVERY `.html` file in the repo.
+
+### 2. `.mjs` component bundles
+
+Search ALL `.mjs` files for the exact string or asset path being changed.
+
+- **Page-specific content** lives in a page component bundle (e.g. `iDcHv9HNpqRex6PReb98a6rK3ZHo1CtIJC8CvmpKx6I.Dwi9EKqJ.mjs` for the index route).
+- **Shared content** (nav, footer, buttons) lives in `shared-lib.DjhlsekC.mjs`.
+- Text may appear multiple times per file (once per responsive breakpoint) — always use `replace_all`.
+- Some page bundles may override shared component text — check all `.mjs` files, not just the shared lib.
+
+### 3. `assets/searchIndex.json`
+
+Update the matching entry under each affected page's URL path. Shared content like nav links appears in every page entry.
+
+## How to find the right files
+
+1. Search ALL files in the repo for the exact string being changed.
+2. For `.mjs` files that resist glob-based search, search each known bundle file directly by path.
+3. For page route mapping: check `data-framer-hydrate-v2` on `<div id="main">` in the HTML to get the `routeId`, or check `script_main.ChSf-xMO.mjs` for route-to-chunk mapping.
+
+## Images and assets
+
+When replacing images or other assets, update the file path or URL in all the same locations: HTML files, `.mjs` bundles, and any references in `searchIndex.json` or other data files.

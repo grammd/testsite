@@ -1,22 +1,35 @@
 Test space for site features
 
-## Editing Page Copy
+## Editing Site Content (Text, Images, Assets)
 
-This is a Framer-exported static site that uses React hydration. Text content is stored in **three places** that must all be kept in sync. If only the HTML is updated, the JS bundle will overwrite the change on hydration.
+This is a Framer-exported static site that uses React hydration. All visible content is stored in **multiple places** that must be kept in sync. If only the HTML is updated, the JS bundle will overwrite the change when React hydrates the page.
 
-When changing any visible text on a page, update all of the following:
+When changing any visible content (text, images, links, etc.), update **all** of the following:
 
-1. **Page HTML file** (e.g. `index.html`)
-   The server-rendered markup the browser shows on first paint.
+### 1. HTML page files
 
-2. **Page component `.mjs` bundle**
-   The React component tree that hydrates the page. Each page route has a corresponding `.mjs` file (e.g. `iDcHv9HNpqRex6PReb98a6rK3ZHo1CtIJC8CvmpKx6I.Dwi9EKqJ.mjs` for the index route). Search for the exact text string and replace it. Some text appears multiple times (once per responsive breakpoint) — replace all occurrences.
+- **Page-specific content**: update the relevant `.html` file (e.g. `index.html`).
+- **Shared content** (navigation, footer, etc.): update **every** `.html` file in the repo, since the nav/footer markup is duplicated in each page.
 
-3. **`assets/searchIndex.json`**
-   The site search index. Find the matching entry for the page's URL path (e.g. `"/"`) and update the relevant heading or paragraph field.
+### 2. `.mjs` component bundles
+
+Search all `.mjs` files for the exact string or asset path being changed.
+
+- **Page-specific content** is in a page component bundle (e.g. `iDcHv9HNpqRex6PReb98a6rK3ZHo1CtIJC8CvmpKx6I.Dwi9EKqJ.mjs` for the index route).
+- **Shared content** (nav, footer, reusable buttons) is in `shared-lib.DjhlsekC.mjs`.
+- Text may appear multiple times per file (once per responsive breakpoint) — replace all occurrences.
+- Some page bundles may override shared component text — always check all `.mjs` files.
+
+### 3. `assets/searchIndex.json`
+
+The site search index. Find the matching entry for each affected page's URL path (e.g. `"/"`). Shared content like nav links appears in every page entry.
 
 ### Finding which `.mjs` file to edit
 
+- Search all files in the repo for the exact text or asset path being changed.
 - Open the HTML file and look for the `data-framer-hydrate-v2` attribute on `<div id="main">`. The `routeId` value (e.g. `eddhjzMea`) identifies the route.
-- Search the `.mjs` files for the exact text you're changing — the file containing it is the page component bundle.
-- Alternatively, check `script_main.ChSf-xMO.mjs` which maps route IDs to their chunk imports.
+- Check `script_main.ChSf-xMO.mjs` which maps route IDs to their chunk imports.
+
+### Images and assets
+
+When replacing images or other assets, update the file path or URL in all the same locations: HTML files, `.mjs` bundles, and any references in `searchIndex.json`.
