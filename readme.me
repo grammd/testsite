@@ -1,35 +1,32 @@
 Test space for site features
 
-## Editing Site Content (Text, Images, Assets)
+## Editing site content so it survives React / JS hydration
 
-This is a Framer-exported static site that uses React hydration. All visible content is stored in **multiple places** that must be kept in sync. If only the HTML is updated, the JS bundle will overwrite the change when React hydrates the page.
+This is a Framer-exported static site. The HTML you see in `.html` files is only the **server render**. After load, React **hydrates** from `.mjs` bundles and re-applies props (text, `href`s, image `src` / `srcSet`, etc.). If the bundles still contain the old values, the UI will **revert** after hydration.
 
-When changing any visible content (text, images, links, etc.), update **all** of the following:
+**Rule:** For anything visible, the **exact same strings and asset paths** must appear in every place Framer duplicated them—usually HTML plus one or more `.mjs` chunks, sometimes `assets/searchIndex.json`.
 
-### 1. HTML page files
+### Workflow (use every time)
 
-- **Page-specific content**: update the relevant `.html` file (e.g. `index.html`).
-- **Shared content** (navigation, footer, etc.): update **every** `.html` file in the repo, since the nav/footer markup is duplicated in each page.
+1. **Search the whole repo** for the exact text, URL, or path you are changing (e.g. `grep -r` from the project root across `*.html`, `*.mjs`, `*.json`). Do not assume only one file.
+2. **Update every hit** in:
+   - **HTML:** page-specific content in that page’s `.html`; **nav, footer, and other shared blocks in every `.html` file** (they are copy-pasted per page).
+   - **`.mjs`:** all bundles that contain the string. Use **replace all** within each file when the same value repeats (breakpoints, variants).
+   - **`assets/searchIndex.json`:** if the string appears there (often nav labels; rarely raw image paths).
+3. **Re-search** for the **old** value. It should return **no matches** in HTML/MJS/JSON (or you missed a duplicate).
+4. **Images:** update the main `src`/`url()` path **and** every **`srcset` / `srcSet` entry** (e.g. `*_79.jpg` style responsive names), in both HTML and the matching route `.mjs` files.
 
-### 2. `.mjs` component bundles
+### Map a page to its JS chunk
 
-Search all `.mjs` files for the exact string or asset path being changed.
+- On `<div id="main">`, read **`data-framer-hydrate-v2`** → `routeId` (e.g. `eddhjzMea`).
+- In **`script_main.ChSf-xMO.mjs`**, find that `routeId` and the **`import(\`./….mjs\`)`** path—that is the page’s main bundle. **Still grep the whole repo**; some props also live in `shared-lib.DjhlsekC.mjs` or other chunks.
 
-- **Page-specific content** is in a page component bundle (e.g. `iDcHv9HNpqRex6PReb98a6rK3ZHo1CtIJC8CvmpKx6I.Dwi9EKqJ.mjs` for the index route).
-- **Shared content** (nav, footer, reusable buttons) is in `shared-lib.DjhlsekC.mjs`.
-- Text may appear multiple times per file (once per responsive breakpoint) — replace all occurrences.
-- Some page bundles may override shared component text — always check all `.mjs` files.
+### Pitfalls (hydration bugs)
 
-### 3. `assets/searchIndex.json`
+- **Partial URL replace:** If a link is stored as `https://framer.com/` + `@something`, replacing only `https://framer.com/` with another origin yields garbage like `https://yoursite@something`. Replace the **full** URL string the bundle uses, or the concatenated result, never a careless prefix-only swap.
+- **Responsive images:** Changing `image.jpg` but leaving `image_79.jpg` in `srcset` keeps the old asset for some viewports.
+- **Trust grep, not one file:** Shared nav and repeated breakpoints mean the same literal can appear in many files.
 
-The site search index. Find the matching entry for each affected page's URL path (e.g. `"/"`). Shared content like nav links appears in every page entry.
+### Images and assets (summary)
 
-### Finding which `.mjs` file to edit
-
-- Search all files in the repo for the exact text or asset path being changed.
-- Open the HTML file and look for the `data-framer-hydrate-v2` attribute on `<div id="main">`. The `routeId` value (e.g. `eddhjzMea`) identifies the route.
-- Check `script_main.ChSf-xMO.mjs` which maps route IDs to their chunk imports.
-
-### Images and assets
-
-When replacing images or other assets, update the file path or URL in all the same locations: HTML files, `.mjs` bundles, and any references in `searchIndex.json`.
+Same path or URL in: all relevant `.html` files, all `.mjs` files that reference it, and `searchIndex.json` or other data files if present.
