@@ -2,7 +2,7 @@ Test space for site features
 
 ## Editing site content so it survives React / JS hydration
 
-This is a Framer-exported static site. The HTML you see in `.html` files is only the **server render**. After load, React **hydrates** from `.mjs` bundles and re-applies props (text, `href`s, image `src` / `srcSet`, etc.). If the bundles still contain the old values, the UI will **revert** after hydration.
+The HTML you see in `.html` files is only the **server render**. After load, React **hydrates** from `.mjs` bundles and re-applies props (text, `href`s, image `src` / `srcSet`, etc.). If the bundles still contain the old values, the UI will **revert** after hydration.
 
 **Rule:** For anything visible, the **exact same strings and asset paths** must appear in every place Framer duplicated them—usually HTML plus one or more `.mjs` chunks, sometimes `assets/searchIndex.json`.
 
@@ -27,6 +27,6 @@ This is a Framer-exported static site. The HTML you see in `.html` files is only
 - **Responsive images:** Changing `image.jpg` but leaving `image_79.jpg` in `srcset` keeps the old asset for some viewports.
 - **Trust grep, not one file:** Shared nav and repeated breakpoints mean the same literal can appear in many files.
 
-### Images and assets (summary)
+### Images and assets 
 
 Same path or URL in: all relevant `.html` files, all `.mjs` files that reference it, and `searchIndex.json` or other data files if present.
