@@ -16,7 +16,7 @@ The HTML you see in `.html` files is only the **server render**. After load, Rea
 3. **Re-search** for the **old** value. It should return **no matches** in HTML/MJS/JSON (or you missed a duplicate).
 4. **Images:** update the main `src`/`url()` path **and** every **`srcset` / `srcSet` entry** (e.g. `*_79.jpg` style responsive names), in both HTML and the matching route `.mjs` files.
 
-### Map a page to its JS chunk
+### Map a page to its JS chunk (Important)
 
 - On `<div id="main">`, read **`data-framer-hydrate-v2`** → `routeId` (e.g. `eddhjzMea`).
 - In **`script_main.ChSf-xMO.mjs`**, find that `routeId` and the **`import(\`./….mjs\`)`** path—that is the page’s main bundle. **Still grep the whole repo**; some props also live in `shared-lib.DjhlsekC.mjs` or other chunks.
@@ -24,7 +24,9 @@ The HTML you see in `.html` files is only the **server render**. After load, Rea
 ### Pitfalls (hydration bugs)
 
 - **Partial URL replace:** If a link is stored as `https://framer.com/` + `@something`, replacing only `https://framer.com/` with another origin yields garbage like `https://yoursite@something`. Replace the **full** URL string the bundle uses, or the concatenated result, never a careless prefix-only swap.
+
 - **Responsive images:** Changing `image.jpg` but leaving `image_79.jpg` in `srcset` keeps the old asset for some viewports.
+
 - **Trust grep, not one file:** Shared nav and repeated breakpoints mean the same literal can appear in many files.
 
 ### Images and assets 
