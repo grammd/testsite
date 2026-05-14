@@ -28,22 +28,6 @@
 ## About The Project
 
 
-Paragraph
-
-title:
-
-Paragraph
-
-
-
-
-
-### Built With
-
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-
 <!-- LICENSE -->
 ## License
 
